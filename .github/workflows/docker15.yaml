@@ -28,5 +28,7 @@ jobs:
     -
         name: Build and push
         run: |
-          docker buildx build \
-            rakeshkrishna/graviton2-arm-cicd:latest --platform linux/arm64 --push\
+           docker buildx build \
+           --platform linux/amd64,linux/arm64 \
+            -t rakeshkrishna/graviton2-arm-cicd:latest \
+           --push \

@@ -27,7 +27,6 @@ jobs:
       uses: docker/setup-buildx-action@v2
     -
         name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: rakeshkrishna/graviton2-arm-cicd:latest
+        run: |
+          docker buildx build \
+            rakeshkrishna/graviton2-arm-cicd:latest --platform linux/arm64 --push\

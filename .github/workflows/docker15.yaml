@@ -1,26 +1,34 @@
-name: Docker
- on:
+name: docker
+
+on:
    push:
-     branches: ['main']
- jobs:
-   docker:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout repository
-         uses: actions/checkout@v3
-+      - name: Set up QEMU
-+        uses: docker/setup-qemu-action@v2
-+        with:
-+          platforms: 'arm64,arm'
-       - name: Set up Docker Buildx
-         uses: docker/setup-buildx-action@v2
-       - name: Login to DockerHub
-         uses: docker/login-action@v2
-         with:
-           username: ${{ secrets.DOCKERHUB_USER}}
-           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-       - name: Build and push
-         uses: docker/build-push-action@v4
-         with:
-           push: true
-           tags: rakeshkrishna/graviton2-arm-cicd:latest 
+     branches:
+       - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v3
+    - 
+      name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    -  
+      name: Setup QEMU
+      uses: docker/setup-qemu-action@v2
+    -
+      name: Set up docker Buildx
+      uses: docker/setup-buildx-action@v2
+    -
+      name: Build and push
+      run: |
+        docker buildx build \
+        --platform linux/amd64,linux/arm64 \
+        -t ${{ github.repository_owner }}/graviton2-arm-cicd:latest \
+        --push \
+        .

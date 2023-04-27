@@ -1,9 +1,9 @@
-name: docker
+name: docker build and publish
 
 on:
-   push:
-     branches:
-       - main
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -21,15 +21,14 @@ jobs:
     -  
       name: Setup QEMU
       uses: docker/setup-qemu-action@v2
-      with:
-+       platforms: 'arm64,arm'
     -
       name: Set up docker Buildx
       uses: docker/setup-buildx-action@v2
     -
       name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-           push: true
-           tags: rakeshkrishna/graviton2-arm-cicd:latest 
-        
+      run: |
+        docker buildx build \
+        --platform linux/amd64,linux/arm64 \
+        -t ${{ github.repository_owner }}/graviton2-arm-cicd:latest \
+        --push \
+        .
